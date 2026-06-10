@@ -48,13 +48,15 @@ func dockerLeftover(home string) (item.Item, bool) {
 		return item.Item{}, false
 	}
 	return item.Item{
-		Name:     "Docker Desktop leftover",
-		Tool:     "docker",
-		Path:     containerPath,
-		Bytes:    bytes,
-		Category: item.CategoryOrphan,
-		Risk:     item.RiskAskBefore,
-		Detail:   "Docker.app is uninstalled but its container data remains",
+		Name:      "Docker Desktop leftover",
+		NameKey:   "orphans.docker-leftover.name",
+		Tool:      "docker",
+		Path:      containerPath,
+		Bytes:     bytes,
+		Category:  item.CategoryOrphan,
+		Risk:      item.RiskAskBefore,
+		Detail:    "Docker.app is uninstalled but its container data remains",
+		DetailKey: "orphans.docker-leftover.detail",
 	}, true
 }
 
@@ -70,12 +72,14 @@ func whatsappMedia(home string) (item.Item, bool) {
 		return item.Item{}, false
 	}
 	return item.Item{
-		Name:     "WhatsApp media",
-		Tool:     "whatsapp",
-		Path:     mediaPath,
-		Bytes:    bytes,
-		Category: item.CategoryOrphan,
-		Risk:     item.RiskAskBefore,
-		Detail:   "downloaded photos/videos/audio (chats not affected)",
+		Name:      "WhatsApp media",
+		NameKey:   "orphans.whatsapp-media.name",
+		Tool:      "whatsapp",
+		Path:      mediaPath,
+		Bytes:     bytes,
+		Category:  item.CategoryOrphan,
+		Risk:      item.RiskAskBefore,
+		Detail:    "downloaded photos/videos/audio (chats not affected)",
+		DetailKey: "orphans.whatsapp-media.detail",
 	}, true
 }

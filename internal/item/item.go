@@ -3,6 +3,8 @@
 // anything chipawa might list, summarize, or remove.
 package item
 
+import "github.com/sistematlan/chipawa/internal/i18n"
+
 // Category groups items by intent so the UI and the cleaner can apply
 // different policies (caches are safe to wipe; orphans need confirmation).
 type Category string
@@ -30,9 +32,21 @@ const (
 
 // Item is a concrete thing detectors return: a path on disk with a size,
 // classification, and optional metadata for the UI.
+//
+// Localization model:
+//   - NameKey + DetailKey point at i18n catalog entries.
+//   - DetailArgs are forwarded to fmt.Sprintf when the message has format directives.
+//   - Name and Detail are kept as fallback for items that have no catalog entry
+//     yet (smooth migration path).
+//
+// Presenters should call HumanName() / HumanDetail() instead of touching
+// Name/Detail directly so they automatically pick the right language and mode.
 type Item struct {
 	// Name shown in the UI (e.g. "npm", "Docker leftover").
+	// Used as fallback when NameKey is empty or its catalog entry missing.
 	Name string
+	// NameKey is an i18n catalog key like "caches.npm.name".
+	NameKey string
 	// Tool or app of origin (e.g. "docker", "jetbrains"). Empty if N/A.
 	Tool string
 	// Path is the absolute filesystem path that would be removed.
@@ -44,7 +58,65 @@ type Item struct {
 	Category Category
 	Risk     Risk
 	// Detail is a short human note for the UI ("media descargada", "v2025.1 antigua").
+	// Used as fallback when DetailKey is empty or its catalog entry missing.
 	Detail string
+	// DetailKey is an i18n catalog key for the detail message. The catalog may
+	// have ".simple" and ".advanced" variants — the caller picks via HumanDetail.
+	DetailKey string
+	// DetailArgs are formatted into the catalog string with fmt.Sprintf.
+	// Empty for plain messages.
+	DetailArgs []any
+}
+
+// HumanName returns the localized short label for the item, falling back
+// to Item.Name when no catalog entry exists.
+func (it Item) HumanName() string {
+	if it.NameKey != "" {
+		s := i18n.T(it.NameKey)
+		// If T returns the key unchanged it means the catalog miss; fall through.
+		if s != it.NameKey {
+			return s
+		}
+	}
+	return it.Name
+}
+
+// HumanDetail returns the localized detail. simple=true picks the
+// non-technical phrasing if available; otherwise the advanced one or
+// the raw Detail field.
+func (it Item) HumanDetail(simple bool) string {
+	if it.DetailKey != "" {
+		key := it.DetailKey
+		// Try the requested variant first.
+		variant := key + ".advanced"
+		if simple {
+			variant = key + ".simple"
+		}
+		s := i18n.T(variant, it.DetailArgs...)
+		if s != variant { // hit
+			return s
+		}
+		// Fall through to the bare key (no .simple/.advanced suffix).
+		s = i18n.T(key, it.DetailArgs...)
+		if s != key {
+			return s
+		}
+	}
+	return it.Detail
+}
+
+// HumanRisk returns the localized risk label.
+func (it Item) HumanRisk() string {
+	switch it.Risk {
+	case RiskSafe:
+		return i18n.T("risk.safe")
+	case RiskAskBefore:
+		return i18n.T("risk.ask")
+	case RiskDangerous:
+		return i18n.T("risk.dangerous")
+	default:
+		return string(it.Risk)
+	}
 }
 
 // Detector reports zero or more items. Detectors must be cheap to call

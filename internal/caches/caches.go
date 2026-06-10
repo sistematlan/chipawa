@@ -25,27 +25,31 @@ func Scan() ([]item.Item, error) {
 	var items []item.Item
 
 	// Simple path-based caches. All RiskSafe — these regenerate on demand.
+	//
+	// The KeyBase is used to look up "caches.<key>.name" / ".detail.simple" /
+	// ".detail.advanced" in the i18n catalog. Tools without translations fall
+	// back to the legacy Name/Detail strings (kept here for safety).
 	pathCaches := []struct {
-		name, tool, rel, detail string
+		keyBase, name, tool, rel, detail string
 	}{
-		{"npm cache", "npm", ".npm/_cacache", "downloaded packages"},
-		{"npm npx cache", "npm", ".npm/_npx", "one-shot npx executions"},
-		{"npm logs", "npm", ".npm/_logs", "old install logs"},
-		{"pnpm store", "pnpm", "Library/pnpm/store", "global content-addressable store"},
-		{"yarn cache", "yarn", ".yarn/cache", "downloaded packages"},
-		{"Homebrew cache", "brew", "Library/Caches/Homebrew", "downloaded bottles & sources"},
-		{"JetBrains cache", "jetbrains", "Library/Caches/JetBrains", "indexes y logs"},
-		{"Go build cache", "go", "Library/Caches/go-build", "compilation cache"},
-		{"pip cache", "pip", "Library/Caches/pip", "wheels & http cache"},
-		{"uv cache", "uv", ".cache/uv", "Python package cache"},
-		{"Composer cache", "composer", "Library/Caches/composer", "PHP packages"},
-		{"node-gyp cache", "node-gyp", "Library/Caches/node-gyp", "native build headers"},
-		{"Chrome cache", "chrome", "Library/Caches/Google/Chrome", "browser cache"},
-		{"Firefox cache", "firefox", "Library/Caches/Mozilla", "browser cache"},
-		{"Xcode DerivedData", "xcode", "Library/Developer/Xcode/DerivedData", "build artifacts"},
-		{"Xcode Archives", "xcode", "Library/Developer/Xcode/Archives", "old release archives"},
-		{"iOS DeviceSupport", "xcode", "Library/Developer/Xcode/iOS DeviceSupport", "symbol files for old iOS versions"},
-		{"CoreSimulator caches", "xcode", "Library/Developer/CoreSimulator/Caches", "simulator caches"},
+		{"npm", "npm cache", "npm", ".npm/_cacache", "downloaded packages"},
+		{"npm-npx", "npm npx cache", "npm", ".npm/_npx", "one-shot npx executions"},
+		{"npm-logs", "npm logs", "npm", ".npm/_logs", "old install logs"},
+		{"pnpm", "pnpm store", "pnpm", "Library/pnpm/store", "global content-addressable store"},
+		{"yarn", "yarn cache", "yarn", ".yarn/cache", "downloaded packages"},
+		{"brew", "Homebrew cache", "brew", "Library/Caches/Homebrew", "downloaded bottles & sources"},
+		{"jetbrains", "JetBrains cache", "jetbrains", "Library/Caches/JetBrains", "indexes y logs"},
+		{"go", "Go build cache", "go", "Library/Caches/go-build", "compilation cache"},
+		{"pip", "pip cache", "pip", "Library/Caches/pip", "wheels & http cache"},
+		{"uv", "uv cache", "uv", ".cache/uv", "Python package cache"},
+		{"composer", "Composer cache", "composer", "Library/Caches/composer", "PHP packages"},
+		{"node-gyp", "node-gyp cache", "node-gyp", "Library/Caches/node-gyp", "native build headers"},
+		{"chrome", "Chrome cache", "chrome", "Library/Caches/Google/Chrome", "browser cache"},
+		{"firefox", "Firefox cache", "firefox", "Library/Caches/Mozilla", "browser cache"},
+		{"xcode-derived", "Xcode DerivedData", "xcode", "Library/Developer/Xcode/DerivedData", "build artifacts"},
+		{"xcode-archives", "Xcode Archives", "xcode", "Library/Developer/Xcode/Archives", "old release archives"},
+		{"xcode-ios-support", "iOS DeviceSupport", "xcode", "Library/Developer/Xcode/iOS DeviceSupport", "symbol files for old iOS versions"},
+		{"xcode-simulator", "CoreSimulator caches", "xcode", "Library/Developer/CoreSimulator/Caches", "simulator caches"},
 	}
 
 	for _, pc := range pathCaches {
@@ -55,22 +59,26 @@ func Scan() ([]item.Item, error) {
 			continue
 		}
 		items = append(items, item.Item{
-			Name:     pc.name,
-			Tool:     pc.tool,
-			Path:     path,
-			Bytes:    bytes,
-			Category: item.CategoryCache,
-			Risk:     item.RiskSafe,
-			Detail:   pc.detail,
+			Name:      pc.name,
+			NameKey:   "caches." + pc.keyBase + ".name",
+			Tool:      pc.tool,
+			Path:      path,
+			Bytes:     bytes,
+			Category:  item.CategoryCache,
+			Risk:      item.RiskSafe,
+			Detail:    pc.detail,
+			DetailKey: "caches." + pc.keyBase + ".detail",
 		})
 	}
 
 	// Cargo caches: registry/{cache,src} and git/checkouts can be removed.
 	// We do NOT touch ~/.cargo/bin or registry/index.
-	cargoSubs := []struct{ rel, detail string }{
-		{".cargo/registry/cache", "downloaded crates"},
-		{".cargo/registry/src", "extracted crate sources"},
-		{".cargo/git/checkouts", "git dependencies"},
+	cargoSubs := []struct {
+		keyBase, rel, detail string
+	}{
+		{"cargo-cache", ".cargo/registry/cache", "downloaded crates"},
+		{"cargo-src", ".cargo/registry/src", "extracted crate sources"},
+		{"cargo-git", ".cargo/git/checkouts", "git dependencies"},
 	}
 	for _, cs := range cargoSubs {
 		path := filepath.Join(home, cs.rel)
@@ -79,13 +87,15 @@ func Scan() ([]item.Item, error) {
 			continue
 		}
 		items = append(items, item.Item{
-			Name:     "Cargo " + filepath.Base(cs.rel),
-			Tool:     "cargo",
-			Path:     path,
-			Bytes:    bytes,
-			Category: item.CategoryCache,
-			Risk:     item.RiskSafe,
-			Detail:   cs.detail,
+			Name:      "Cargo " + filepath.Base(cs.rel),
+			NameKey:   "caches." + cs.keyBase + ".name",
+			Tool:      "cargo",
+			Path:      path,
+			Bytes:     bytes,
+			Category:  item.CategoryCache,
+			Risk:      item.RiskSafe,
+			Detail:    cs.detail,
+			DetailKey: "caches." + cs.keyBase + ".detail",
 		})
 	}
 
@@ -161,13 +171,15 @@ func jetBrainsOldVersions(home string) ([]item.Item, error) {
 				continue
 			}
 			items = append(items, item.Item{
-				Name:     v,
-				Tool:     "jetbrains",
-				Path:     path,
-				Bytes:    bytes,
-				Category: item.CategoryCache,
-				Risk:     item.RiskAskBefore, // settings live here too
-				Detail:   fmt.Sprintf("%s old version (latest: %s)", product, latest),
+				Name:       v,
+				Tool:       "jetbrains",
+				Path:       path,
+				Bytes:      bytes,
+				Category:   item.CategoryCache,
+				Risk:       item.RiskAskBefore, // settings live here too
+				Detail:     fmt.Sprintf("%s old version (latest: %s)", product, latest),
+				DetailKey:  "caches.jetbrains-old.detail",
+				DetailArgs: []any{product, latest},
 			})
 		}
 	}
@@ -214,13 +226,15 @@ func dockerReclaimable() (item.Item, bool) {
 		return item.Item{}, false
 	}
 	return item.Item{
-		Name:     "Docker reclaimable",
-		Tool:     "docker",
-		Path:     "", // no path: removed via `docker system prune`
-		Bytes:    total,
-		Category: item.CategoryCache,
-		Risk:     item.RiskSafe,
-		Detail:   "images, build cache, stopped containers (volumes excluded)",
+		Name:      "Docker reclaimable",
+		NameKey:   "caches.docker.name",
+		Tool:      "docker",
+		Path:      "", // no path: removed via `docker system prune`
+		Bytes:     total,
+		Category:  item.CategoryCache,
+		Risk:      item.RiskSafe,
+		Detail:    "images, build cache, stopped containers (volumes excluded)",
+		DetailKey: "caches.docker.detail",
 	}, true
 }
 

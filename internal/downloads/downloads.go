@@ -146,13 +146,14 @@ func classifySmart(
 			return Detail{}, false
 		}
 		return makeDetail(item.Item{
-			Name:     name,
-			Tool:     "downloads",
-			Path:     path,
-			Bytes:    bytes,
-			Category: item.CategoryDownload,
-			Risk:     item.RiskAskBefore,
-			Detail:   "carpeta de proyecto con node_modules/target/dist (probablemente abandonada)",
+			Name:      name,
+			Tool:      "downloads",
+			Path:      path,
+			Bytes:     bytes,
+			Category:  item.CategoryDownload,
+			Risk:      item.RiskAskBefore,
+			Detail:    "carpeta de proyecto con node_modules/target/dist (probablemente abandonada)",
+			DetailKey: "downloads.project-folder.detail",
 		}, SubProjectFolder, modTime, ageDays), true
 	}
 
@@ -164,13 +165,15 @@ func classifySmart(
 				return Detail{}, false
 			}
 			return makeDetail(item.Item{
-				Name:     name,
-				Tool:     "downloads",
-				Path:     path,
-				Bytes:    bytes,
-				Category: item.CategoryDownload,
-				Risk:     item.RiskSafe, // app already on disk; installer is redundant
-				Detail:   "instalador; " + appName + " ya está instalada",
+				Name:       name,
+				Tool:       "downloads",
+				Path:       path,
+				Bytes:      bytes,
+				Category:   item.CategoryDownload,
+				Risk:       item.RiskSafe, // app already on disk; installer is redundant
+				Detail:     "instalador; " + appName + " ya está instalada",
+				DetailKey:  "downloads.installer.detail",
+				DetailArgs: []any{appName},
 			}, SubInstaller, modTime, ageDays), true
 		}
 	}
@@ -185,14 +188,21 @@ func classifySmart(
 				if bytes <= 0 {
 					return Detail{}, false
 				}
+				// DetailArgs order: simple uses just %s (sibling); advanced
+				// uses %s, %s (ext, sibling). The simple variant ignores ext
+				// because regular users don't care if it was zip vs rar.
+				// To keep one DetailArgs slice, we put sibling first and ext
+				// second; templates that only need sibling don't reference ext.
 				return makeDetail(item.Item{
-					Name:     name,
-					Tool:     "downloads",
-					Path:     path,
-					Bytes:    bytes,
-					Category: item.CategoryDownload,
-					Risk:     item.RiskAskBefore,
-					Detail:   "archivo " + ext + " ya extraído en ./" + sibling + "/",
+					Name:       name,
+					Tool:       "downloads",
+					Path:       path,
+					Bytes:      bytes,
+					Category:   item.CategoryDownload,
+					Risk:       item.RiskAskBefore,
+					Detail:     "archivo " + ext + " ya extraído en ./" + sibling + "/",
+					DetailKey:  "downloads.archive-extracted.detail",
+					DetailArgs: []any{sibling, ext},
 				}, SubArchiveExtracted, modTime, ageDays), true
 			}
 		}
@@ -205,13 +215,14 @@ func classifySmart(
 			return Detail{}, false
 		}
 		return makeDetail(item.Item{
-			Name:     name,
-			Tool:     "downloads",
-			Path:     path,
-			Bytes:    bytes,
-			Category: item.CategoryDownload,
-			Risk:     item.RiskAskBefore,
-			Detail:   "dump de base de datos (>30 días)",
+			Name:      name,
+			Tool:      "downloads",
+			Path:      path,
+			Bytes:     bytes,
+			Category:  item.CategoryDownload,
+			Risk:      item.RiskAskBefore,
+			Detail:    "dump de base de datos (>30 días)",
+			DetailKey: "downloads.db-dump.detail",
 		}, SubDBDump, modTime, ageDays), true
 	}
 
@@ -222,13 +233,14 @@ func classifySmart(
 			return Detail{}, false
 		}
 		return makeDetail(item.Item{
-			Name:     name,
-			Tool:     "downloads",
-			Path:     path,
-			Bytes:    bytes,
-			Category: item.CategoryDownload,
-			Risk:     item.RiskAskBefore,
-			Detail:   "video (>90 días)",
+			Name:      name,
+			Tool:      "downloads",
+			Path:      path,
+			Bytes:     bytes,
+			Category:  item.CategoryDownload,
+			Risk:      item.RiskAskBefore,
+			Detail:    "video (>90 días)",
+			DetailKey: "downloads.old-video.detail",
 		}, SubOldVideo, modTime, ageDays), true
 	}
 
@@ -239,13 +251,14 @@ func classifySmart(
 			return Detail{}, false
 		}
 		return makeDetail(item.Item{
-			Name:     name,
-			Tool:     "downloads",
-			Path:     path,
-			Bytes:    bytes,
-			Category: item.CategoryDownload,
-			Risk:     item.RiskAskBefore,
-			Detail:   "archivo comprimido (>90 días)",
+			Name:      name,
+			Tool:      "downloads",
+			Path:      path,
+			Bytes:     bytes,
+			Category:  item.CategoryDownload,
+			Risk:      item.RiskAskBefore,
+			Detail:    "archivo comprimido (>90 días)",
+			DetailKey: "downloads.old-archive.detail",
 		}, SubOldArchive, modTime, ageDays), true
 	}
 
@@ -293,13 +306,14 @@ func collectLargeOthers(root string, entries []os.DirEntry, classified map[strin
 	for _, p := range pool {
 		ageDays := int(time.Since(p.modTime).Hours() / 24)
 		out = append(out, makeDetail(item.Item{
-			Name:     p.name,
-			Tool:     "downloads",
-			Path:     filepath.Join(root, p.name),
-			Bytes:    p.bytes,
-			Category: item.CategoryDownload,
-			Risk:     item.RiskAskBefore,
-			Detail:   "archivo grande sin clasificar — revisa antes de borrar",
+			Name:      p.name,
+			Tool:      "downloads",
+			Path:      filepath.Join(root, p.name),
+			Bytes:     p.bytes,
+			Category:  item.CategoryDownload,
+			Risk:      item.RiskAskBefore,
+			Detail:    "archivo grande sin clasificar — revisa antes de borrar",
+			DetailKey: "downloads.large-other.detail",
 		}, SubLargeOther, p.modTime, ageDays))
 	}
 	return out

@@ -8,8 +8,13 @@ import (
 	"strings"
 
 	"github.com/sistematlan/chipawa/internal/disk"
+	"github.com/sistematlan/chipawa/internal/i18n"
 	"github.com/sistematlan/chipawa/internal/item"
 )
+
+// SimpleMode toggles human-friendly phrasing in prompts. The cmd package
+// sets it before each Run; tests can leave it as the zero value (advanced).
+var SimpleMode bool
 
 // TerminalPrompter is the default Prompter used by `chipawa clean`.
 // It reads a single line from stdin per Ask call and accepts:
@@ -54,34 +59,34 @@ func (p *TerminalPrompter) Ask(it item.Item) Decision {
 	if it.Risk == item.RiskDangerous {
 		return p.askDangerous(it)
 	}
-	prompt := "[s/N/v=ver/q=salir] "
+	prompt := i18n.T("cleaner.prompt")
 	return readDecision(p.reader(), p.Out, prompt)
 }
 
 // printItem renders the header block shown before each prompt.
 func (p *TerminalPrompter) printItem(it item.Item) {
 	fmt.Fprintln(p.Out)
-	fmt.Fprintf(p.Out, "  %s — %s\n", it.Name, disk.FormatBytes(it.Bytes))
+	fmt.Fprintf(p.Out, "  %s — %s\n", it.HumanName(), disk.FormatBytes(it.Bytes))
 	if it.Tool != "" {
-		fmt.Fprintf(p.Out, "  tool : %s\n", it.Tool)
+		fmt.Fprintf(p.Out, "  %s : %s\n", i18n.T("ui.tool"), it.Tool)
 	}
-	if it.Path != "" {
-		fmt.Fprintf(p.Out, "  path : %s\n", it.Path)
+	if it.Path != "" && !SimpleMode {
+		fmt.Fprintf(p.Out, "  %s : %s\n", i18n.T("ui.path"), it.Path)
 	}
-	if it.Detail != "" {
-		fmt.Fprintf(p.Out, "  note : %s\n", it.Detail)
+	if d := it.HumanDetail(SimpleMode); d != "" {
+		fmt.Fprintf(p.Out, "  %s : %s\n", i18n.T("ui.note"), d)
 	}
-	fmt.Fprintf(p.Out, "  risk : %s\n", riskLabel(it.Risk))
+	fmt.Fprintf(p.Out, "  %s : %s\n", i18n.T("ui.risk"), it.HumanRisk())
 }
 
 // askDangerous forces the user to type the item name to confirm.
 func (p *TerminalPrompter) askDangerous(it item.Item) Decision {
-	fmt.Fprintf(p.Out, "  CONFIRMA escribiendo el nombre exacto (%q) o vacío para cancelar:\n  > ", it.Name)
+	fmt.Fprintf(p.Out, "  "+i18n.T("cleaner.prompt.dangerous"), it.HumanName())
 	scanner := p.reader()
 	if !scanner.Scan() {
 		return DecisionNo
 	}
-	if strings.TrimSpace(scanner.Text()) == it.Name {
+	if strings.TrimSpace(scanner.Text()) == it.HumanName() {
 		return DecisionYes
 	}
 	return DecisionNo
@@ -104,18 +109,5 @@ func readDecision(scanner *bufio.Scanner, out io.Writer, prompt string) Decision
 		return DecisionQuit
 	default:
 		return DecisionNo
-	}
-}
-
-func riskLabel(r item.Risk) string {
-	switch r {
-	case item.RiskSafe:
-		return "safe (cache regenerable)"
-	case item.RiskAskBefore:
-		return "ask-before (puede contener datos del usuario)"
-	case item.RiskDangerous:
-		return "dangerous (irreversible)"
-	default:
-		return string(r)
 	}
 }
