@@ -7,31 +7,34 @@ import (
 	"github.com/sistematlan/chipawa/internal/caches"
 	"github.com/sistematlan/chipawa/internal/cleaner"
 	"github.com/sistematlan/chipawa/internal/disk"
+	"github.com/sistematlan/chipawa/internal/downloads"
 	"github.com/sistematlan/chipawa/internal/item"
 	"github.com/sistematlan/chipawa/internal/orphans"
 	"github.com/spf13/cobra"
 )
 
 var (
-	cleanDryRun         bool
-	cleanYes            bool
-	cleanIncludeOrphans bool
+	cleanDryRun           bool
+	cleanYes              bool
+	cleanIncludeOrphans   bool
+	cleanIncludeDownloads bool
 )
 
 var cleanCmd = &cobra.Command{
 	Use:   "clean",
 	Short: "Limpieza interactiva con confirmación por ítem",
-	Long: `Recorre los caches detectados y, opcionalmente, los datos huérfanos.
+	Long: `Recorre los caches detectados y, opcionalmente, datos huérfanos y candidatos en Downloads.
 Por cada ítem pregunta s/N/v(er)/q(uit). Use --dry-run para previsualizar.
 
 Ejemplos:
   chipawa clean --dry-run                # ver qué se borraría
   chipawa clean                          # interactivo, solo caches
   chipawa clean --include-orphans        # también WhatsApp media, Docker leftover
+  chipawa clean --include-downloads      # también DMGs ya instalados, ZIPs extraídos, dumps viejos
   chipawa clean --yes                    # sin confirmaciones (CI)`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// 1. Build the candidate list.
-		items, err := collectCleanCandidates(cleanIncludeOrphans)
+		items, err := collectCleanCandidates(cleanIncludeOrphans, cleanIncludeDownloads)
 		if err != nil {
 			return err
 		}
@@ -77,10 +80,13 @@ Ejemplos:
 	},
 }
 
-// collectCleanCandidates merges caches and (optionally) orphans into one list.
+// collectCleanCandidates merges caches and (optionally) orphans/downloads into one list.
 // Items with no path AND no specialized remover are filtered out by the
 // resolver later, so we don't need to skip them here.
-func collectCleanCandidates(includeOrphans bool) ([]item.Item, error) {
+//
+// Note: downloads.AsItems() drops the "large-other" subcategory by design —
+// those need manual review via `chipawa downloads`, not blanket cleaning.
+func collectCleanCandidates(includeOrphans, includeDownloads bool) ([]item.Item, error) {
 	cs, err := caches.Scan()
 	if err != nil {
 		return nil, err
@@ -94,13 +100,24 @@ func collectCleanCandidates(includeOrphans bool) ([]item.Item, error) {
 		}
 		all = append(all, os...)
 	}
+
+	if includeDownloads {
+		ds, err := downloads.Scan()
+		if err != nil {
+			return nil, err
+		}
+		all = append(all, downloads.AsItems(ds)...)
+	}
+
 	return all, nil
 }
 
 func init() {
 	cleanCmd.Flags().BoolVar(&cleanDryRun, "dry-run", false, "Reporta sin borrar")
-	cleanCmd.Flags().BoolVar(&cleanYes, "yes", false, "Confirmar todo autom\u00e1ticamente")
+	cleanCmd.Flags().BoolVar(&cleanYes, "yes", false, "Confirmar todo automáticamente")
 	cleanCmd.Flags().BoolVar(&cleanIncludeOrphans, "include-orphans", false,
 		"Incluye datos huérfanos (Docker leftover, WhatsApp media, etc.)")
+	cleanCmd.Flags().BoolVar(&cleanIncludeDownloads, "include-downloads", false,
+		"Incluye candidatos de ~/Downloads (instaladores ya usados, ZIPs extraídos, dumps viejos)")
 	rootCmd.AddCommand(cleanCmd)
 }
