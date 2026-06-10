@@ -15,30 +15,26 @@
 - [x] `internal/cleaner` con `Mode` (DryRun/Interactive/Yes), `Remover`, `Plan`, `Summary`
 - [x] `PathRemover` con guardia `SafeRoots`; `DockerPruneRemover` (sin `--volumes`)
 - [x] `TerminalPrompter` con `[s/N/v=ver/q=salir]` y confirmación por nombre para `RiskDangerous`
-- [x] Comando `clean` con `--dry-run`, `--yes`, `--include-orphans`
+- [x] Comando `clean` con `--dry-run`, `--yes`, `--include-orphans`, `--include-downloads`
 - [x] Bug fix: scanner reutilizado en `TerminalPrompter` (no se descarta el buffer entre prompts)
 - [x] Tests unitarios (10 casos en cleaner, parser de tamaños Docker, splitJBVersion, fixtures de orphans)
+- [x] **`internal/downloads`** con 7 clasificadores: installer-with-app, archive-extracted, project-folder, db-dump, old-video, old-archive, large-other
+- [x] **Comando `downloads`** con tabla agrupada por subcategoría
+- [x] Integración downloads → clean vía `--include-downloads`
+- [x] Tests de downloads con fixtures temporales (8 casos)
 
 ---
 
 ## 🔥 Próxima sesión — completar MVP
 
-### 1. Comando `downloads` (P0)
+### 1. Comando `downloads` (P0) — ✅ COMPLETADO
 
-Clasifica `~/Downloads` para identificar candidatos a borrar.
-
-- [ ] `internal/downloads/downloads.go` con detector
-- [ ] Agrupar por extensión: `.dmg`, `.pkg`, `.zip`, `.sql`, `.cbr`, `.mov`, `.mp4`, `.iso`
-- [ ] Agrupar por antigüedad: `<30d`, `30-90d`, `>90d`
-- [ ] Detectar **ZIPs ya extraídos**: si existe carpeta con mismo nombre al lado del .zip
-- [ ] Detectar **node_modules dentro de Downloads** (proyectos abandonados)
-- [ ] Detectar **DMGs cuya app está instalada** (instalador ya usado)
-- [ ] Detectar **.sql/.sql.bak grandes** como candidatos obvios
-- [ ] Comando `cmd/downloads.go` con tabla agrupada
-- [ ] Integrar items en `clean` (categoría `CategoryDownload`, `RiskAskBefore`)
-- [ ] Tests con fixtures temporales
-
-**Estimado:** 1-2 horas.
+- [x] `internal/downloads/downloads.go` con detector
+- [x] Smart rules: installer-with-app, archive-extracted, project-folder, db-dump, old-video, old-archive
+- [x] Catch-all `large-other` para archivos >100 MB sin clasificar
+- [x] Comando `cmd/downloads.go` con tabla agrupada
+- [x] Integrar items en `clean` (categoría `CategoryDownload`, `RiskAskBefore`)
+- [x] Tests con fixtures temporales
 
 ### 2. Flags globales + `report` (P0)
 
@@ -252,10 +248,10 @@ Del SPEC original:
 - [x] `chipawa projects --path ~/sourcecode` reporta estado git de cada repo
 - [x] `chipawa clean --dry-run` lista candidatos sin borrar nada
 - [x] `chipawa clean` pide confirmación por ítem
-- [ ] `chipawa downloads` clasifica Downloads por tipo y antigüedad
+- [x] `chipawa downloads` clasifica Downloads por tipo y antigüedad
 - [ ] `chipawa report --json` emite reporte estructurado
 - [x] Binario único, sin dependencias externas en runtime
 - [x] `make build` compila en < 10 segundos
 - [x] Tests pasan con `make test`
 
-**Faltan:** `downloads`, `report --json`, flags globales. Después MVP completo.
+**Faltan:** `report --json` y flags globales. Después MVP completo (10/11 ✓).
