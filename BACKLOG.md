@@ -28,6 +28,11 @@
 - [x] **Flags globales `--lang` y `--advanced`** en root.go
 - [x] **Migración de todos los detectores** a NameKey/DetailKey/DetailArgs
 - [x] **TerminalPrompter localizado**: prompts, summary, confirmación dangerous
+- [x] **`internal/spinner`** con detección de TTY y fallback para non-TTY
+- [x] **`internal/wizard`** con tres niveles preset (Light/Standard/Deep) y filtros por nivel
+- [x] **Wizard UI completa**: intro, scan animado, menú numerado, confirmación, resumen
+- [x] **Cobra integration**: `chipawa` sin args ejecuta wizard. Subcomandos siguen igual.
+- [x] **Tests del wizard**: 6 casos cubriendo niveles, totales, monotonicidad, level.String()
 
 ---
 
@@ -53,7 +58,14 @@
 
 **Estimado:** 2-3 horas. Refactor mediano porque toca todos los comandos.
 
-### 3. Color y UI polish (P1)
+### 3. Wizard mejoras (post-MVP, opcional)
+
+- [ ] Flags directos para no-tty: `chipawa --light`, `--standard`, `--deep` que skipean menu
+- [ ] `--no-confirm` para modo CI con wizard
+- [ ] Mostrar breakdown por categoría dentro del nivel ("npm: 1.2 GB, brew: 200 MB...")
+- [ ] Spinner multi-fase: "Scanning caches..." → "Scanning orphans..." → "Scanning downloads..."
+
+### 4. Color y UI polish (P1)
 
 - [ ] Lib: `github.com/fatih/color` o solo ANSI manual (preferible — menos deps)
 - [ ] Verde para "safe", amarillo para "ask", rojo para "danger"
