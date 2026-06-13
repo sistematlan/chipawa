@@ -7,8 +7,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/sistematlan/chipawa/internal/disk"
-	"github.com/sistematlan/chipawa/internal/item"
+	"github.com/sistematlan/mistah/internal/disk"
+	"github.com/sistematlan/mistah/internal/item"
 )
 
 // Scan inspects the system for orphaned data and returns the items found.

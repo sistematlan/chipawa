@@ -3,7 +3,7 @@ package wizard
 import (
 	"testing"
 
-	"github.com/sistematlan/chipawa/internal/item"
+	"github.com/sistematlan/mistah/internal/item"
 )
 
 // fixtureInventory returns a representative inventory:

@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/sistematlan/chipawa/internal/apps"
-	"github.com/sistematlan/chipawa/internal/disk"
+	"github.com/sistematlan/mistah/internal/apps"
+	"github.com/sistematlan/mistah/internal/disk"
 	"github.com/spf13/cobra"
 )
 

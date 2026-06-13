@@ -7,11 +7,11 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/sistematlan/chipawa/internal/cleaner"
-	"github.com/sistematlan/chipawa/internal/disk"
-	"github.com/sistematlan/chipawa/internal/i18n"
-	"github.com/sistematlan/chipawa/internal/item"
-	"github.com/sistematlan/chipawa/internal/spinner"
+	"github.com/sistematlan/mistah/internal/cleaner"
+	"github.com/sistematlan/mistah/internal/disk"
+	"github.com/sistematlan/mistah/internal/i18n"
+	"github.com/sistematlan/mistah/internal/item"
+	"github.com/sistematlan/mistah/internal/spinner"
 )
 
 // Run executes the full wizard flow on the given streams.
@@ -88,7 +88,7 @@ func Run(in io.Reader, out io.Writer) error {
 // printIntro prints the small banner shown before the scan.
 func printIntro(out io.Writer) {
 	fmt.Fprintln(out)
-	fmt.Fprintln(out, "  chipawa")
+	fmt.Fprintln(out, "  mistah")
 	fmt.Fprintln(out, "  ───────")
 	fmt.Fprintln(out, "  "+i18n.T("wizard.tagline"))
 	fmt.Fprintln(out)

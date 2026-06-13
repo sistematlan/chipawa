@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/sistematlan/chipawa/internal/caches"
-	"github.com/sistematlan/chipawa/internal/disk"
-	"github.com/sistematlan/chipawa/internal/i18n"
-	"github.com/sistematlan/chipawa/internal/item"
+	"github.com/sistematlan/mistah/internal/caches"
+	"github.com/sistematlan/mistah/internal/disk"
+	"github.com/sistematlan/mistah/internal/i18n"
+	"github.com/sistematlan/mistah/internal/item"
 	"github.com/spf13/cobra"
 )
 

@@ -182,7 +182,7 @@ var spanish = map[string]string{
 	"wizard.menu.prompt":         "Opción [1-4]: ",
 	"wizard.menu.cancel":         "Cancelar — no borrar nada",
 	"wizard.cancelled":           "Cancelado. No se borró nada.",
-	"wizard.thanks":              "Listo. Gracias por usar chipawa.",
+	"wizard.thanks":              "Listo. Gracias por usar mistah.",
 	"wizard.level.light.name":    "Ligera",
 	"wizard.level.light.desc":    "Solo cachés seguras de dev (npm, brew, pip…)",
 	"wizard.level.standard.name": "Estándar",

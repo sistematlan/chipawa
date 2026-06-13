@@ -1,5 +1,5 @@
 build:
-	go build -o bin/chipawa .
+	go build -o bin/mistah .
 
 run:
 	go run . $(ARGS)

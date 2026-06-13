@@ -1,4 +1,4 @@
-# BACKLOG — chipawa
+# BACKLOG — mistah
 
 > Pendientes priorizados. Ítems marcados con `[x]` están completados.
 > Última actualización: sesión 2026-06-08.
@@ -31,7 +31,7 @@
 - [x] **`internal/spinner`** con detección de TTY y fallback para non-TTY
 - [x] **`internal/wizard`** con tres niveles preset (Light/Standard/Deep) y filtros por nivel
 - [x] **Wizard UI completa**: intro, scan animado, menú numerado, confirmación, resumen
-- [x] **Cobra integration**: `chipawa` sin args ejecuta wizard. Subcomandos siguen igual.
+- [x] **Cobra integration**: `mistah` sin args ejecuta wizard. Subcomandos siguen igual.
 - [x] **Tests del wizard**: 6 casos cubriendo niveles, totales, monotonicidad, level.String()
 
 ---
@@ -60,7 +60,7 @@
 
 ### 3. Wizard mejoras (post-MVP, opcional)
 
-- [ ] Flags directos para no-tty: `chipawa --light`, `--standard`, `--deep` que skipean menu
+- [ ] Flags directos para no-tty: `mistah --light`, `--standard`, `--deep` que skipean menu
 - [ ] `--no-confirm` para modo CI con wizard
 - [ ] Mostrar breakdown por categoría dentro del nivel ("npm: 1.2 GB, brew: 200 MB...")
 - [ ] Spinner multi-fase: "Scanning caches..." → "Scanning orphans..." → "Scanning downloads..."
@@ -118,7 +118,7 @@
 
 ### Detector genérico "big files" (catch-all)
 
-- [ ] Comando `chipawa big-files` que escanea `$HOME` y reporta los N archivos más grandes
+- [ ] Comando `mistah big-files` que escanea `$HOME` y reporta los N archivos más grandes
 - [ ] Filtros: `--min-size 100M`, `--ext .mov,.mp4,.dmg`, `--older-than 90d`
 - [ ] Clasifica automáticamente:
   - **Videos personales** (.mov, .mp4, .mkv) >500 MB
@@ -143,7 +143,7 @@
 
 - [ ] Tamaño TOTAL (app + Application Support + Containers + Caches asociados)
 - [ ] Sugerir desinstalación con `mdls` last-used > 180d
-- [ ] Comando `chipawa apps uninstall <name>` que llama a `mdfind` para encontrar todos los archivos relacionados
+- [ ] Comando `mistah apps uninstall <name>` que llama a `mdfind` para encontrar todos los archivos relacionados
 
 ### Mejoras al cleaner
 
@@ -151,7 +151,7 @@
 - [ ] Modo `--tool docker|jetbrains|...` (filtro por tool)
 - [ ] Modo `--min-size 100M` (solo items grandes)
 - [ ] Confirmación batch: "borrar todos los marcados con [s]" al final
-- [ ] Undo log: registrar qué se borró y cuándo en `~/.chipawa/history.log`
+- [ ] Undo log: registrar qué se borró y cuándo en `~/.mistah/history.log`
 
 ---
 
@@ -173,7 +173,7 @@
 ### Distribución y crecimiento
 
 - [ ] Release v0.1.0 a Homebrew
-- [ ] Post en HackerNews ("Show HN: chipawa — a transparent disk cleaner for macOS developers")
+- [ ] Post en HackerNews ("Show HN: mistah — a transparent disk cleaner for macOS developers")
 - [ ] Reddit: r/macOS, r/golang, r/programming
 - [ ] Demo en video (asciinema) para README
 - [ ] Documentación de cada detector con ejemplo de output
@@ -181,15 +181,15 @@
 ### Ideas más ambiciosas
 
 - [ ] **Modo daemon**: ejecuta `scan` periódicamente y notifica cuando disco <20%
-- [ ] **Plugins**: detectores externos cargados desde `~/.chipawa/plugins/*.so` o subprocess
+- [ ] **Plugins**: detectores externos cargados desde `~/.mistah/plugins/*.so` o subprocess
 - [ ] **Dashboard TUI** con bubbletea (alternativa al CLI puro)
-- [ ] **Política de retención**: archivo de config (`~/.chipawa/config.toml`) con reglas tipo `npm cache: keep 30 days`
+- [ ] **Política de retención**: archivo de config (`~/.mistah/config.toml`) con reglas tipo `npm cache: keep 30 days`
 - [ ] **Comparativa pre/post**: muestra diff de uso por carpeta tras `clean`
 - [ ] **Sugerencias inteligentes**: "tienes 12 carpetas con node_modules y solo trabajas en 3 proyectos activos"
 
 ### Multiplataforma — análisis técnico
 
-**Estado actual:** chipawa es macOS-only por diseño. Hay 18 referencias a `~/Library/`
+**Estado actual:** mistah es macOS-only por diseño. Hay 18 referencias a `~/Library/`
 y todos los detectores asumen filesystem Unix con paths macOS específicos.
 
 #### Soporte Linux (medio plazo)
@@ -222,9 +222,9 @@ y todos los detectores asumen filesystem Unix con paths macOS específicos.
 
 ### Métricas de salud
 
-- [ ] `chipawa doctor`: detecta problemas comunes (Docker sin volumes, brew obsoleto, etc.)
-- [ ] `chipawa baseline`: guarda snapshot del estado actual para comparar después
-- [ ] `chipawa diff <baseline>`: muestra qué creció/decreció desde un baseline
+- [ ] `mistah doctor`: detecta problemas comunes (Docker sin volumes, brew obsoleto, etc.)
+- [ ] `mistah baseline`: guarda snapshot del estado actual para comparar después
+- [ ] `mistah diff <baseline>`: muestra qué creció/decreció desde un baseline
 
 ---
 
@@ -257,10 +257,10 @@ y todos los detectores asumen filesystem Unix con paths macOS específicos.
 ### Democratización (sesión 4 backlog)
 
 - **Audiencia objetivo expandida**: técnicos no-dev y power users macOS, no consumer mainstream.
-- **NO hacer GUI nativa Swift**: convertiría chipawa en otro producto, mercado saturado por CleanMyMac, perdería ventaja de auditabilidad open-source.
+- **NO hacer GUI nativa Swift**: convertiría mistah en otro producto, mercado saturado por CleanMyMac, perdería ventaja de auditabilidad open-source.
 - **NO hacer TUI bubbletea**: gain marginal sobre Camino A para audiencia adicional.
 - **Modo por default**: simple (lenguaje humano, niveles preset). Modo técnico opt-in con `--advanced` o `--verbose`.
-- **Wizard sin args**: `chipawa` sin subcomando ejecuta wizard con tres niveles preset (Ligera / Estándar / Profunda).
+- **Wizard sin args**: `mistah` sin subcomando ejecuta wizard con tres niveles preset (Ligera / Estándar / Profunda).
 - **Distribución**: Apple notarization + curl one-liner + Homebrew. Requiere Apple Developer Account ($99/año).
 - **i18n**: detección automática via `LANG`/`LC_ALL`. Soporte es + en. Sin libs externas — mapas Go nativos.
 - **Plan de implementación**: 4 sesiones — (1) i18n+lenguaje humano, (2) wizard+niveles, (3) report+flags globales, (4) distribución+notarización.
@@ -270,7 +270,7 @@ y todos los detectores asumen filesystem Unix con paths macOS específicos.
 - **No A/B testing tradicional hasta tener 1000+ usuarios reales.** Requiere telemetría que traiciona la promesa de privacidad.
 - **Etapa 1 (primeros 5 usuarios)**: sesiones guiadas 1-on-1 de 30 minutos vía Zoom + share screen. Cualitativo profundo. Jakob Nielsen: 5 usuarios descubren 80% de problemas de UX.
 - **Etapa 2 (50-100 usuarios)**: encuesta opt-in al final de `clean` con link manual a Tally/Typeform. URL solo lleva versión + bytes liberados, nunca paths o contenido. Sin recolección automática.
-- **Etapa 3 (1000+ usuarios)**: solo entonces considerar telemetría opt-in granular con default OFF, comando explícito (`chipawa telemetry enable`), documentación de payload exacto y endpoint open-source para auditar.
+- **Etapa 3 (1000+ usuarios)**: solo entonces considerar telemetría opt-in granular con default OFF, comando explícito (`mistah telemetry enable`), documentación de payload exacto y endpoint open-source para auditar.
 - **Reclutamiento de testers iniciales**:
   - [ ] Build in public: tweet/post en X y LinkedIn buscando 5 beta testers macOS
   - [ ] r/macapps, r/golang
@@ -288,14 +288,14 @@ y todos los detectores asumen filesystem Unix con paths macOS específicos.
 
 Del SPEC original:
 
-- [x] `chipawa scan` muestra resumen de disco y top categorías
-- [x] `chipawa apps` lista apps con último uso y tamaño
-- [x] `chipawa caches` detecta y totaliza caches de dev
-- [x] `chipawa projects --path ~/sourcecode` reporta estado git de cada repo
-- [x] `chipawa clean --dry-run` lista candidatos sin borrar nada
-- [x] `chipawa clean` pide confirmación por ítem
-- [x] `chipawa downloads` clasifica Downloads por tipo y antigüedad
-- [ ] `chipawa report --json` emite reporte estructurado
+- [x] `mistah scan` muestra resumen de disco y top categorías
+- [x] `mistah apps` lista apps con último uso y tamaño
+- [x] `mistah caches` detecta y totaliza caches de dev
+- [x] `mistah projects --path ~/sourcecode` reporta estado git de cada repo
+- [x] `mistah clean --dry-run` lista candidatos sin borrar nada
+- [x] `mistah clean` pide confirmación por ítem
+- [x] `mistah downloads` clasifica Downloads por tipo y antigüedad
+- [ ] `mistah report --json` emite reporte estructurado
 - [x] Binario único, sin dependencias externas en runtime
 - [x] `make build` compila en < 10 segundos
 - [x] Tests pasan con `make test`

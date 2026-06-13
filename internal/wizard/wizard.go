@@ -2,8 +2,8 @@
 // pick a cleaning level, confirm, execute, report.
 //
 // Audience contract:
-//   - The wizard is for people who want chipawa to "just work".
-//   - It NEVER asks per-item — that's what `chipawa clean` is for.
+//   - The wizard is for people who want mistah to "just work".
+//   - It NEVER asks per-item — that's what `mistah clean` is for.
 //   - It picks one of three preset levels and shows total impact upfront.
 //   - It always offers a final confirm before deleting anything.
 //
@@ -19,10 +19,10 @@
 package wizard
 
 import (
-	"github.com/sistematlan/chipawa/internal/caches"
-	"github.com/sistematlan/chipawa/internal/downloads"
-	"github.com/sistematlan/chipawa/internal/item"
-	"github.com/sistematlan/chipawa/internal/orphans"
+	"github.com/sistematlan/mistah/internal/caches"
+	"github.com/sistematlan/mistah/internal/downloads"
+	"github.com/sistematlan/mistah/internal/item"
+	"github.com/sistematlan/mistah/internal/orphans"
 )
 
 // Level enumerates the wizard presets.

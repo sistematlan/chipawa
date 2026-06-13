@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/sistematlan/chipawa/internal/apps"
-	"github.com/sistematlan/chipawa/internal/caches"
-	"github.com/sistematlan/chipawa/internal/disk"
-	"github.com/sistematlan/chipawa/internal/item"
-	"github.com/sistematlan/chipawa/internal/orphans"
+	"github.com/sistematlan/mistah/internal/apps"
+	"github.com/sistematlan/mistah/internal/caches"
+	"github.com/sistematlan/mistah/internal/disk"
+	"github.com/sistematlan/mistah/internal/item"
+	"github.com/sistematlan/mistah/internal/orphans"
 	"github.com/spf13/cobra"
 )
 
@@ -16,7 +16,7 @@ var scanCmd = &cobra.Command{
 	Use:   "scan",
 	Short: "Escaneo completo: disco, apps, caches y datos hu\u00e9rfanos",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("=== chipawa scan ===")
+		fmt.Println("=== mistah scan ===")
 		fmt.Println()
 
 		// 1. Disk usage.
@@ -51,7 +51,7 @@ var scanCmd = &cobra.Command{
 			fmt.Printf("  %-30s %s\n", c.Name, disk.FormatBytes(c.Bytes))
 		}
 		if len(cacheList) > 8 {
-			fmt.Printf("  ... y %d m\u00e1s (chipawa caches)\n", len(cacheList)-8)
+			fmt.Printf("  ... y %d m\u00e1s (mistah caches)\n", len(cacheList)-8)
 		}
 		fmt.Println()
 
@@ -73,7 +73,7 @@ var scanCmd = &cobra.Command{
 		// 5. Grand total.
 		grand := item.TotalBytes(cacheList) + item.TotalBytes(orphanList)
 		fmt.Printf("Recuperable estimado: %s\n", disk.FormatBytes(grand))
-		fmt.Println("Ejecuta `chipawa clean --dry-run` para ver qu\u00e9 se borrar\u00eda.")
+		fmt.Println("Ejecuta `mistah clean --dry-run` para ver qu\u00e9 se borrar\u00eda.")
 		return nil
 	},
 }

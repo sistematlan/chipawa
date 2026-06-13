@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/sistematlan/chipawa/internal/disk"
-	"github.com/sistematlan/chipawa/internal/item"
+	"github.com/sistematlan/mistah/internal/disk"
+	"github.com/sistematlan/mistah/internal/item"
 )
 
 // Scan runs every cache detector and returns the items found.

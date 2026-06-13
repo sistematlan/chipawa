@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/sistematlan/chipawa/internal/caches"
-	"github.com/sistematlan/chipawa/internal/cleaner"
-	"github.com/sistematlan/chipawa/internal/disk"
-	"github.com/sistematlan/chipawa/internal/downloads"
-	"github.com/sistematlan/chipawa/internal/item"
-	"github.com/sistematlan/chipawa/internal/orphans"
+	"github.com/sistematlan/mistah/internal/caches"
+	"github.com/sistematlan/mistah/internal/cleaner"
+	"github.com/sistematlan/mistah/internal/disk"
+	"github.com/sistematlan/mistah/internal/downloads"
+	"github.com/sistematlan/mistah/internal/item"
+	"github.com/sistematlan/mistah/internal/orphans"
 	"github.com/spf13/cobra"
 )
 
@@ -27,11 +27,11 @@ var cleanCmd = &cobra.Command{
 Por cada ítem pregunta s/N/v(er)/q(uit). Use --dry-run para previsualizar.
 
 Ejemplos:
-  chipawa clean --dry-run                # ver qué se borraría
-  chipawa clean                          # interactivo, solo caches
-  chipawa clean --include-orphans        # también WhatsApp media, Docker leftover
-  chipawa clean --include-downloads      # también DMGs ya instalados, ZIPs extraídos, dumps viejos
-  chipawa clean --yes                    # sin confirmaciones (CI)`,
+  mistah clean --dry-run                # ver qué se borraría
+  mistah clean                          # interactivo, solo caches
+  mistah clean --include-orphans        # también WhatsApp media, Docker leftover
+  mistah clean --include-downloads      # también DMGs ya instalados, ZIPs extraídos, dumps viejos
+  mistah clean --yes                    # sin confirmaciones (CI)`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// 1. Build the candidate list.
 		items, err := collectCleanCandidates(cleanIncludeOrphans, cleanIncludeDownloads)
@@ -88,7 +88,7 @@ Ejemplos:
 // resolver later, so we don't need to skip them here.
 //
 // Note: downloads.AsItems() drops the "large-other" subcategory by design —
-// those need manual review via `chipawa downloads`, not blanket cleaning.
+// those need manual review via `mistah downloads`, not blanket cleaning.
 func collectCleanCandidates(includeOrphans, includeDownloads bool) ([]item.Item, error) {
 	cs, err := caches.Scan()
 	if err != nil {

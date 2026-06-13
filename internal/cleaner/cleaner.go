@@ -22,7 +22,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/sistematlan/chipawa/internal/item"
+	"github.com/sistematlan/mistah/internal/item"
 )
 
 // Mode controls how the cleaner asks for confirmation.
@@ -68,7 +68,7 @@ type Remover interface {
 //   - everything else with a non-empty Path → PathRemover
 type Resolver func(it item.Item) (Remover, error)
 
-// DefaultResolver is the standard mapping used by `chipawa clean`.
+// DefaultResolver is the standard mapping used by `mistah clean`.
 func DefaultResolver(it item.Item) (Remover, error) {
 	if it.Tool == "docker" && it.Path == "" {
 		return DockerPruneRemover{}, nil

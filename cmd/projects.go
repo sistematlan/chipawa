@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/sistematlan/chipawa/internal/disk"
-	"github.com/sistematlan/chipawa/internal/projects"
+	"github.com/sistematlan/mistah/internal/disk"
+	"github.com/sistematlan/mistah/internal/projects"
 	"github.com/spf13/cobra"
 )
 

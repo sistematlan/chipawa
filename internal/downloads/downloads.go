@@ -26,8 +26,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/sistematlan/chipawa/internal/disk"
-	"github.com/sistematlan/chipawa/internal/item"
+	"github.com/sistematlan/mistah/internal/disk"
+	"github.com/sistematlan/mistah/internal/item"
 )
 
 // Subcategory classifies a downloads item further than item.Category.
@@ -267,7 +267,7 @@ func classifySmart(
 
 // collectLargeOthers returns the top-N largest unclassified entries above
 // thresholdLargeBytes. These are RiskAskBefore by default and NOT included
-// in `clean` automatically — they appear only in `chipawa downloads`.
+// in `clean` automatically — they appear only in `mistah downloads`.
 func collectLargeOthers(root string, entries []os.DirEntry, classified map[string]bool) []Detail {
 	type sized struct {
 		name    string

@@ -1,4 +1,4 @@
-module github.com/sistematlan/chipawa
+module github.com/sistematlan/mistah
 
 go 1.26.2
 

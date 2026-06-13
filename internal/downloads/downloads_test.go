@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sistematlan/chipawa/internal/item"
+	"github.com/sistematlan/mistah/internal/item"
 )
 
 // makeFile writes a file of N bytes at path with given mod time.
@@ -193,7 +193,7 @@ func TestScanPath_LargeOther(t *testing.T) {
 
 // TestScanPath_MissingFolder: scanning a non-existent path returns no items, no error.
 func TestScanPath_MissingFolder(t *testing.T) {
-	details, err := ScanPath("/tmp/this-path-must-not-exist-chipawa-12345")
+	details, err := ScanPath("/tmp/this-path-must-not-exist-mistah-12345")
 	if err != nil {
 		t.Fatalf("missing folder should not error, got %v", err)
 	}

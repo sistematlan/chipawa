@@ -1,9 +1,9 @@
 // Package item defines the common type used across detectors.
 // A scannable Item can be a cache, an orphan, a download, or a project —
-// anything chipawa might list, summarize, or remove.
+// anything mistah might list, summarize, or remove.
 package item
 
-import "github.com/sistematlan/chipawa/internal/i18n"
+import "github.com/sistematlan/mistah/internal/i18n"
 
 // Category groups items by intent so the UI and the cleaner can apply
 // different policies (caches are safe to wipe; orphans need confirmation).

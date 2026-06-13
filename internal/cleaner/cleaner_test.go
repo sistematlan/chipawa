@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/sistematlan/chipawa/internal/item"
+	"github.com/sistematlan/mistah/internal/item"
 )
 
 // scriptedPrompter returns a fixed sequence of decisions, one per Ask call.

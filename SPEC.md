@@ -1,6 +1,6 @@
-# chipawa — spec
+# mistah — spec
 
-> *chipāhua* (náhuatl): purificar, limpiar.  
+> *mistah* (maya yucateco): "él/ella barre", del verbo *mis* (barrer).
 > CLI open-source para macOS que analiza el disco, detecta basura de desarrollo y libera espacio con confirmación explícita antes de tocar nada.
 
 **Estado:** borrador v0.1  
@@ -24,16 +24,16 @@ Go, JetBrains, editores Electron (Cursor, VS Code, etc.).
 ## 2. Comandos
 
 ```
-chipawa scan          Escaneo completo: disco, apps, caches, proyectos
-chipawa apps          Apps instaladas con fecha de último uso y tamaño
-chipawa caches        Caches de herramientas dev (Docker, npm, Homebrew, etc.)
-chipawa projects      Análisis de carpetas de código fuente
-chipawa downloads     Archivos en ~/Downloads agrupados por tipo y antigüedad
-chipawa clean         Limpieza interactiva con confirmación ítem por ítem
-chipawa clean --dry-run  Muestra qué se eliminaría sin borrar nada
-chipawa report        Genera reporte en JSON o texto plano
-chipawa version       Versión del binario
-chipawa help          Ayuda general
+mistah scan          Escaneo completo: disco, apps, caches, proyectos
+mistah apps          Apps instaladas con fecha de último uso y tamaño
+mistah caches        Caches de herramientas dev (Docker, npm, Homebrew, etc.)
+mistah projects      Análisis de carpetas de código fuente
+mistah downloads     Archivos en ~/Downloads agrupados por tipo y antigüedad
+mistah clean         Limpieza interactiva con confirmación ítem por ítem
+mistah clean --dry-run  Muestra qué se eliminaría sin borrar nada
+mistah report        Genera reporte en JSON o texto plano
+mistah version       Versión del binario
+mistah help          Ayuda general
 ```
 
 ### Flags globales
@@ -50,7 +50,7 @@ chipawa help          Ayuda general
 ## 3. Módulos internos
 
 ```
-chipawa/
+mistah/
 ├── cmd/                  Comandos CLI (cobra)
 │   ├── root.go
 │   ├── scan.go
@@ -160,11 +160,11 @@ Detectores individuales para:
 
 ```
 # Fase 1 — binario manual
-make build → ./bin/chipawa
+make build → ./bin/mistah
 
 # Fase 2 — Homebrew tap
 brew tap sistematlan/tools
-brew install chipawa
+brew install mistah
 
 # Fase 3 — GitHub Releases con goreleaser
 goreleaser release
@@ -184,12 +184,12 @@ goreleaser release
 
 ## 9. MVP — criterios de aceptación
 
-- [ ] `chipawa scan` muestra resumen de disco y top categorías
-- [ ] `chipawa apps` lista apps con último uso y tamaño
-- [ ] `chipawa caches` detecta y totaliza caches de dev
-- [ ] `chipawa projects --path ~/sourcecode` reporta estado git de cada repo
-- [ ] `chipawa clean --dry-run` lista candidatos sin borrar nada
-- [ ] `chipawa clean` pide confirmación por ítem
+- [ ] `mistah scan` muestra resumen de disco y top categorías
+- [ ] `mistah apps` lista apps con último uso y tamaño
+- [ ] `mistah caches` detecta y totaliza caches de dev
+- [ ] `mistah projects --path ~/sourcecode` reporta estado git de cada repo
+- [ ] `mistah clean --dry-run` lista candidatos sin borrar nada
+- [ ] `mistah clean` pide confirmación por ítem
 - [ ] Binario único, sin dependencias externas en runtime
 - [ ] `make build` compila en < 10 segundos
 - [ ] Tests pasan con `make test`

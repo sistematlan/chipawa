@@ -3,8 +3,8 @@ package cmd
 import (
 	"os"
 
-	"github.com/sistematlan/chipawa/internal/i18n"
-	"github.com/sistematlan/chipawa/internal/wizard"
+	"github.com/sistematlan/mistah/internal/i18n"
+	"github.com/sistematlan/mistah/internal/wizard"
 	"github.com/spf13/cobra"
 )
 
@@ -18,22 +18,22 @@ var (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "chipawa",
+	Use:   "mistah",
 	Short: "Limpia tu Mac como desarrollador",
-	Long:  "chipawa — analiza disco, apps, caches y proyectos. Libera espacio con confirmación.",
+	Long:  "mistah — analiza disco, apps, caches y proyectos. Libera espacio con confirmación.",
 	// PersistentPreRunE applies the locale before any subcommand executes.
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 		applyLangFlag()
 		return nil
 	},
 	// RunE only fires when no subcommand is given. We use it to launch the
-	// wizard so a bare `chipawa` becomes the friendly entry point. Power
+	// wizard so a bare `mistah` becomes the friendly entry point. Power
 	// users still have every subcommand available.
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return wizard.Run(os.Stdin, cmd.OutOrStdout())
 	},
 	// Disable cobra's automatic suggestions for misspelled subcommands when
-	// no args are passed; otherwise `chipawa` would print "did you mean…?"
+	// no args are passed; otherwise `mistah` would print "did you mean…?"
 	// because we now have RunE defined.
 	SilenceUsage: true,
 }

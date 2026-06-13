@@ -7,21 +7,21 @@ import (
 	"os"
 	"strings"
 
-	"github.com/sistematlan/chipawa/internal/disk"
-	"github.com/sistematlan/chipawa/internal/i18n"
-	"github.com/sistematlan/chipawa/internal/item"
+	"github.com/sistematlan/mistah/internal/disk"
+	"github.com/sistematlan/mistah/internal/i18n"
+	"github.com/sistematlan/mistah/internal/item"
 )
 
 // SimpleMode toggles human-friendly phrasing in prompts. The cmd package
 // sets it before each Run; tests can leave it as the zero value (advanced).
 var SimpleMode bool
 
-// TerminalPrompter is the default Prompter used by `chipawa clean`.
+// TerminalPrompter is the default Prompter used by `mistah clean`.
 // It reads a single line from stdin per Ask call and accepts:
 //
 //	s / si / y / yes  → DecisionYes
 //	n / no            → DecisionNo  (default on empty)
-//	v / ver / view    → DecisionView (chipawa shows path contents and asks again)
+//	v / ver / view    → DecisionView (mistah shows path contents and asks again)
 //	q / quit          → DecisionQuit (stop the whole plan)
 //
 // For RiskDangerous items the prompter requires the user to TYPE the item name

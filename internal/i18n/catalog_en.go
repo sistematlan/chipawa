@@ -13,7 +13,7 @@ package i18n
 //	caches.npm.detail.simple    — phrasing for non-developers
 //	caches.npm.detail.advanced  — phrasing with technical terms
 //	risk.safe                   — risk badge label
-//	cmd.scan.header             — section header in `chipawa scan`
+//	cmd.scan.header             — section header in `mistah scan`
 //
 // Strings may include fmt directives; callers pass args through T(key, args...).
 var english = map[string]string{
@@ -196,7 +196,7 @@ var english = map[string]string{
 	"wizard.menu.prompt":         "Choice [1-4]: ",
 	"wizard.menu.cancel":         "Cancel — don't delete anything",
 	"wizard.cancelled":           "Cancelled. Nothing was deleted.",
-	"wizard.thanks":              "Done. Thanks for using chipawa.",
+	"wizard.thanks":              "Done. Thanks for using mistah.",
 	"wizard.level.light.name":    "Light",
 	"wizard.level.light.desc":    "Safe dev caches only (npm, brew, pip…)",
 	"wizard.level.standard.name": "Standard",

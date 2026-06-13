@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/sistematlan/chipawa/internal/disk"
+	"github.com/sistematlan/mistah/internal/disk"
 )
 
 type Project struct {
