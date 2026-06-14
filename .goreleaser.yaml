@@ -1,0 +1,89 @@
+# goreleaser config — produces signed darwin-arm64 + darwin-amd64 binaries
+# on every git tag matching v*. Drives `curl mistah.sistematlan.com/install.sh | sh`
+# end-to-end.
+#
+# Apple notarization is NOT enabled yet (requires paid Developer ID).
+# Users can bypass Gatekeeper one-time with `xattr -d com.apple.quarantine`
+# until we add notarization in a future release.
+#
+# Quick reference:
+#   goreleaser release --snapshot --clean   # local dry-run
+#   git tag v0.1.0 && git push --tags        # triggers .github/workflows/release.yml
+version: 2
+
+project_name: mistah
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: mistah
+    main: ./
+    binary: mistah
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    # ldflags trim debug paths and embed version metadata so `mistah --version`
+    # (when we add it) reflects the tag.
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.Date}}
+    flags:
+      - -trimpath
+
+archives:
+  # Tarballs named like mistah_v0.1.0_darwin_arm64.tar.gz so install.sh can
+  # construct the URL deterministically from arch + version.
+  - id: mistah-archive
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    formats: ["tar.gz"]
+    files:
+      - LICENSE*
+      - README*
+      - SPEC.md
+
+checksums:
+  name_template: "checksums.txt"
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^chore:"
+      - "^test:"
+      - "Merge pull request"
+      - "Merge branch"
+
+release:
+  github:
+    owner: sistematlan
+    name: mistah
+  draft: false
+  prerelease: auto
+  name_template: "mistah {{ .Version }}"
+  header: |
+    ## mistah {{ .Version }}
+
+    Limpia tu Mac al estilo open-source.
+
+    ### Install
+
+    ```sh
+    curl -fsSL https://mistah.sistematlan.com/install.sh | sh
+    ```
+
+    Or download the binary for your architecture below and put it in your `PATH`.
+  footer: |
+    ---
+    🌐 https://mistah.sistematlan.com · 🐙 https://github.com/sistematlan/mistah
